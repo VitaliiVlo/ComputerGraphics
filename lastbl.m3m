@@ -1,0 +1,291 @@
+# -*- coding: cp1251 -*-
+#|lastbl
+
+import Kompas10API5 as KAPI
+import Kompas10API7 as KAPI7
+import pythoncom
+from win32com.client import Dispatch
+import LDefin2D
+import LDefin3D
+import ksConstants as CONST2D7
+import ksConstants3D as CONST3D7
+import MiscellaneousHelpers as MH
+
+iKompasObject = Dispatch('KOMPAS.Application.5')
+iKompasObject = KAPI.KompasObject(iKompasObject)
+MH.iKompasObject = iKompasObject
+
+iApplication = Dispatch('KOMPAS.Application.7')
+iApplication = KAPI7.IApplication(iApplication)
+MH.iApplication = iApplication
+
+iDocument3D = iKompasObject.ActiveDocument3D()
+
+iDocument = iApplication.ActiveDocument
+iKompasDocument3D = KAPI7.IKompasDocument3D(iDocument)
+
+iPart = iDocument3D.GetPart(LDefin3D.pTop_Part)
+iSketch = iPart.NewEntity(LDefin3D.o3d_sketch)
+iDefinition = iSketch.GetDefinition()
+iPlane = iPart.GetDefaultEntity(LDefin3D.o3d_planeYOZ)
+iDefinition.SetPlane(iPlane)
+iSketch.Create()
+
+iDocument2D = iDefinition.BeginEdit()
+obj = iDocument2D.ksLineSeg(0.0, 0.0, 1820.0, 0.0, 1)
+obj = iDocument2D.ksLineSeg(1820.0, 0.0, 1820.0, 4095.0, 1)
+obj = iDocument2D.ksLineSeg(0.0, 4095.0, 0.0, 0.0, 1)
+obj = iDocument2D.ksLineSeg(1820.0, 4095.0, 0.0, 4095.0, 1)
+iDefinition.EndEdit()
+
+iPart = iDocument3D.GetPart(LDefin3D.pTop_Part)
+obj = iPart.NewEntity(LDefin3D.o3d_bossExtrusion)
+iDefinition = obj.GetDefinition()
+iCollection = iPart.EntityCollection(LDefin3D.o3d_edge)
+iCollection.SelectByPoint(0.0, -4095.0, -910.0)
+iEdge = iCollection.GetByIndex(0)
+iEdgeDefinition = iEdge.GetDefinition()
+iSketch = iEdgeDefinition.GetOwnerEntity()
+iDefinition.SetSketch(iSketch)
+
+iExtrusionParam = iDefinition.ExtrusionParam()
+iExtrusionParam.depthNormal = 9828.0
+iExtrusionParam.depthReverse = 10.0
+iExtrusionParam.direction = LDefin3D.dtNormal
+iExtrusionParam.draftOutwardNormal = False
+iExtrusionParam.draftOutwardReverse = False
+iExtrusionParam.draftValueNormal = 0.0
+iExtrusionParam.draftValueReverse = 0.0
+iExtrusionParam.typeNormal = LDefin3D.etBlind
+iExtrusionParam.typeReverse = LDefin3D.etBlind
+
+iThinParam = iDefinition.ThinParam()
+iThinParam.thin = False
+iThinParam.normalThickness = 1.0
+iThinParam.reverseThickness = 1.0
+iThinParam.thinType = LDefin3D.dtNormal
+
+obj.name = "Операция выдавливания:1"
+iColorParam = obj.ColorParam()
+iColorParam.ambient = 0.5
+iColorParam.color = 9474192
+iColorParam.diffuse = 0.6
+iColorParam.emission = 0.5
+iColorParam.shininess = 0.8
+iColorParam.specularity = 0.8
+iColorParam.transparency = 1.0
+
+obj.Create()
+
+iPart = iDocument3D.GetPart(LDefin3D.pTop_Part)
+iSketch = iPart.NewEntity(LDefin3D.o3d_sketch)
+iDefinition = iSketch.GetDefinition()
+iPlane = iPart.GetDefaultEntity(LDefin3D.o3d_planeXOY)
+iDefinition.SetPlane(iPlane)
+iSketch.Create()
+
+iDocument2D = iDefinition.BeginEdit()
+
+obj = iDocument2D.ksLineSeg(-9828.0, -2184.0, -7280.0, -2184.0, 1)
+obj = iDocument2D.ksLineSeg(-7280.0, -2184.0, -7280.0, -3640.0, 1)
+obj = iDocument2D.ksLineSeg(-7280.0, -3640.0, -9828.0, -3640.0, 1)
+obj = iDocument2D.ksLineSeg(-9828.0, -3640.0, -9828.0, -2184.0, 1)
+iDefinition.EndEdit()
+
+iPart = iDocument3D.GetPart(LDefin3D.pTop_Part)
+obj = iPart.NewEntity(LDefin3D.o3d_cutExtrusion)
+iDefinition = obj.GetDefinition()
+iCollection = iPart.EntityCollection(LDefin3D.o3d_edge)
+iCollection.SelectByPoint(-8554.0, -3640.0, 0.0)
+iEdge = iCollection.GetByIndex(0)
+iEdgeDefinition = iEdge.GetDefinition()
+iSketch = iEdgeDefinition.GetOwnerEntity()
+iDefinition.SetSketch(iSketch)
+iDefinition.cut = True
+
+iExtrusionParam = iDefinition.ExtrusionParam()
+iExtrusionParam.depthNormal = 910.0
+iExtrusionParam.depthReverse = 10.0
+iExtrusionParam.direction = LDefin3D.dtNormal
+iExtrusionParam.draftOutwardNormal = False
+iExtrusionParam.draftOutwardReverse = False
+iExtrusionParam.draftValueNormal = 0.0
+iExtrusionParam.draftValueReverse = 0.0
+iExtrusionParam.typeNormal = LDefin3D.etBlind
+iExtrusionParam.typeReverse = LDefin3D.etBlind
+
+iThinParam = iDefinition.ThinParam()
+iThinParam.thin = False
+iThinParam.normalThickness = 1.0
+iThinParam.reverseThickness = 1.0
+iThinParam.thinType = LDefin3D.dtNormal
+
+obj.name = "Вырезать элемент выдавливания:1"
+iColorParam = obj.ColorParam()
+iColorParam.ambient = 0.5
+iColorParam.color = 9474192
+iColorParam.diffuse = 0.6
+iColorParam.emission = 0.5
+iColorParam.shininess = 0.8
+iColorParam.specularity = 0.8
+iColorParam.transparency = 1.0
+
+obj.Create()
+
+iPart = iDocument3D.GetPart(LDefin3D.pTop_Part)
+iSketch = iPart.NewEntity(LDefin3D.o3d_sketch)
+iDefinition = iSketch.GetDefinition()
+iPlane = iPart.GetDefaultEntity(LDefin3D.o3d_planeXOY)
+iDefinition.SetPlane(iPlane)
+iSketch.Create()
+
+iDocument2D = iDefinition.BeginEdit()
+obj = iDocument2D.ksCircle(-8554.0, -2912.0, 455.0, 1)
+iDefinition.EndEdit()
+
+iPart = iDocument3D.GetPart(LDefin3D.pTop_Part)
+obj = iPart.NewEntity(LDefin3D.o3d_cutExtrusion)
+iDefinition = obj.GetDefinition()
+iCollection = iPart.EntityCollection(LDefin3D.o3d_edge)
+iCollection.SelectByPoint(-9009.0, -2912.0, 0.0)
+iEdge = iCollection.GetByIndex(0)
+iEdgeDefinition = iEdge.GetDefinition()
+iSketch = iEdgeDefinition.GetOwnerEntity()
+iDefinition.SetSketch(iSketch)
+iDefinition.cut = True
+
+iExtrusionParam = iDefinition.ExtrusionParam()
+iExtrusionParam.depthNormal = 1820.0
+iExtrusionParam.depthReverse = 10.0
+iExtrusionParam.direction = LDefin3D.dtNormal
+iExtrusionParam.draftOutwardNormal = False
+iExtrusionParam.draftOutwardReverse = False
+iExtrusionParam.draftValueNormal = 0.0
+iExtrusionParam.draftValueReverse = 0.0
+iExtrusionParam.typeNormal = LDefin3D.etThroughAll
+iExtrusionParam.typeReverse = LDefin3D.etBlind
+
+iThinParam = iDefinition.ThinParam()
+iThinParam.thin = False
+iThinParam.normalThickness = 1.0
+iThinParam.reverseThickness = 1.0
+iThinParam.thinType = LDefin3D.dtNormal
+
+obj.name = "Вырезать элемент выдавливания:2"
+iColorParam = obj.ColorParam()
+iColorParam.ambient = 0.5
+iColorParam.color = 9474192
+iColorParam.diffuse = 0.6
+iColorParam.emission = 0.5
+iColorParam.shininess = 0.8
+iColorParam.specularity = 0.8
+iColorParam.transparency = 1.0
+
+obj.Create()
+
+iPart = iDocument3D.GetPart(LDefin3D.pTop_Part)
+iSketch = iPart.NewEntity(LDefin3D.o3d_sketch)
+iDefinition = iSketch.GetDefinition()
+iPlane = iPart.GetDefaultEntity(LDefin3D.o3d_planeXOZ)
+iDefinition.SetPlane(iPlane)
+iSketch.Create()
+
+iDocument2D = iDefinition.BeginEdit()
+obj = iDocument2D.ksLineSeg(-2457.0, 910.0, -4914.0, 0.0, 1)
+obj = iDocument2D.ksLineSeg(0.0, 0.0, -2457.0, 910.0, 1)
+obj = iDocument2D.ksLineSeg(-4914.0, 0.0, 0.0, 0.0, 1)
+iDefinition.EndEdit()
+
+iPart = iDocument3D.GetPart(LDefin3D.pTop_Part)
+obj = iPart.NewEntity(LDefin3D.o3d_cutExtrusion)
+iDefinition = obj.GetDefinition()
+iCollection = iPart.EntityCollection(LDefin3D.o3d_edge)
+iCollection.SelectByPoint(-1228.5, 0.0, -455.0)
+iEdge = iCollection.GetByIndex(0)
+iEdgeDefinition = iEdge.GetDefinition()
+iSketch = iEdgeDefinition.GetOwnerEntity()
+iDefinition.SetSketch(iSketch)
+iDefinition.cut = True
+
+iExtrusionParam = iDefinition.ExtrusionParam()
+iExtrusionParam.depthNormal = 1911.0
+iExtrusionParam.depthReverse = 10.0
+iExtrusionParam.direction = LDefin3D.dtNormal
+iExtrusionParam.draftOutwardNormal = False
+iExtrusionParam.draftOutwardReverse = False
+iExtrusionParam.draftValueNormal = 0.0
+iExtrusionParam.draftValueReverse = 0.0
+iExtrusionParam.typeNormal = LDefin3D.etBlind
+iExtrusionParam.typeReverse = LDefin3D.etBlind
+
+iThinParam = iDefinition.ThinParam()
+iThinParam.thin = False
+iThinParam.normalThickness = 1.0
+iThinParam.reverseThickness = 1.0
+iThinParam.thinType = LDefin3D.dtNormal
+
+obj.name = "Вырезать элемент выдавливания:3"
+iColorParam = obj.ColorParam()
+iColorParam.ambient = 0.5
+iColorParam.color = 9474192
+iColorParam.diffuse = 0.6
+iColorParam.emission = 0.5
+iColorParam.shininess = 0.8
+iColorParam.specularity = 0.8
+iColorParam.transparency = 1.0
+
+obj.Create()
+
+iPart = iDocument3D.GetPart(LDefin3D.pTop_Part)
+iSketch = iPart.NewEntity(LDefin3D.o3d_sketch)
+iDefinition = iSketch.GetDefinition()
+iPlane = iPart.GetDefaultEntity(LDefin3D.o3d_planeYOZ)
+iDefinition.SetPlane(iPlane)
+iSketch.Create()
+
+iDocument2D = iDefinition.BeginEdit()
+
+obj = iDocument2D.ksLineSeg(0.0, 0.0, 910.0, 0.0, 1)
+obj = iDocument2D.ksLineSeg(910.0, 0.0, 910.0, 819.0, 1)
+obj = iDocument2D.ksLineSeg(910.0, 819.0, 0.0, 819.0, 1)
+obj = iDocument2D.ksLineSeg(0.0, 819.0, 0.0, 0.0, 1)
+iDefinition.EndEdit()
+
+iPart = iDocument3D.GetPart(LDefin3D.pTop_Part)
+obj = iPart.NewEntity(LDefin3D.o3d_bossExtrusion)
+iDefinition = obj.GetDefinition()
+iCollection = iPart.EntityCollection(LDefin3D.o3d_edge)
+iCollection.SelectByPoint(0.0, -819.0, -455.0)
+iEdge = iCollection.GetByIndex(0)
+iEdgeDefinition = iEdge.GetDefinition()
+iSketch = iEdgeDefinition.GetOwnerEntity()
+iDefinition.SetSketch(iSketch)
+
+iExtrusionParam = iDefinition.ExtrusionParam()
+iExtrusionParam.depthNormal = 9828.0
+iExtrusionParam.depthReverse = 10.0
+iExtrusionParam.direction = LDefin3D.dtNormal
+iExtrusionParam.draftOutwardNormal = False
+iExtrusionParam.draftOutwardReverse = False
+iExtrusionParam.draftValueNormal = 0.0
+iExtrusionParam.draftValueReverse = 0.0
+iExtrusionParam.typeNormal = LDefin3D.etBlind
+iExtrusionParam.typeReverse = LDefin3D.etBlind
+
+iThinParam = iDefinition.ThinParam()
+iThinParam.thin = False
+iThinParam.normalThickness = 1.0
+iThinParam.reverseThickness = 1.0
+iThinParam.thinType = LDefin3D.dtNormal
+
+obj.name = "Операция выдавливания:2"
+iColorParam = obj.ColorParam()
+iColorParam.ambient = 0.5
+iColorParam.color = 9474192
+iColorParam.diffuse = 0.6
+iColorParam.emission = 0.5
+iColorParam.shininess = 0.8
+iColorParam.specularity = 0.8
+iColorParam.transparency = 1.0
+
+obj.Create()
